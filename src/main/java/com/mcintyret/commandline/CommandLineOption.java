@@ -8,26 +8,26 @@ import static com.mcintyret.commandline.Utils.checkArgument;
  */
 public class CommandLineOption {
 
-    public enum Arg {
+    public enum HasArg {
         YES,
         NO,
         OPTIONAL   // Avoid if possible, it complicates processing and adds ambiguity
     }
 
-    private final Arg arg;
+    private final HasArg arg;
 
     private final char c;
 
     private final String[] fullArgs;
 
-    public CommandLineOption(Arg arg, char c, String... fullArgs) {
+    public CommandLineOption(HasArg arg, char c, String... fullArgs) {
         checkArgument(Character.isLetterOrDigit(c));
         this.arg = arg;
         this.c = c;
         this.fullArgs = fullArgs;
     }
 
-    Arg getArg() {
+    HasArg getArg() {
         return arg;
     }
 

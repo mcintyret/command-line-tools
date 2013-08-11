@@ -15,6 +15,8 @@ public class CommandLineOptions {
 
     private final Map<Character, CommandLineOption> charOptions = new HashMap<>();
 
+    static final CommandLineOptions NO_OPTIONS = new CommandLineOptions();
+
     public CommandLineOptions(CommandLineOption... options) {
         for (CommandLineOption option : options) {
             putIfAbsent(charOptions, option.getC(), option);

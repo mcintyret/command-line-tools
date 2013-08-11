@@ -24,6 +24,14 @@ public class CommandLineInput {
         this.options = options;
     }
 
+    public static CommandLineInput parseInput(String[] args) {
+        return parseInput(args, CommandLineOptions.NO_OPTIONS);
+    }
+
+    public static CommandLineInput parseInput(String[] args, CommandLineOptions options) {
+        return parseInput(args, options, false);
+    }
+
     public static CommandLineInput parseInput(String[] args, CommandLineOptions options, boolean ignoreInvalid) {
         CommandLineInput input = new CommandLineInput(options);
 
@@ -62,26 +70,26 @@ public class CommandLineInput {
                         opts.add(getOption(arg.charAt(j), ignoreInvalid, options));
                     }
                     CommandLineOption withArg = null;
-                    CommandLineOption.Arg argType = null;
+                    CommandLineOption.HasArg argType = null;
                     for (CommandLineOption opt : opts) {
                         if (opt != null) {
                             switch (opt.getArg()) {
                                 case YES:
-                                    if (withArg != null && argType == CommandLineOption.Arg.YES) {
+                                    if (withArg != null && argType == CommandLineOption.HasArg.YES) {
                                         throw new IllegalArgumentException("When multiple options are provided in a group, only one may require an argument: '" + arg + "'");
                                     }
                                     withArg = opt;
-                                    argType = CommandLineOption.Arg.YES;
+                                    argType = CommandLineOption.HasArg.YES;
                                     break;
                                 case NO:
                                     input.addFlag(opt);
                                     break;
                                 case OPTIONAL:
-                                    if (withArg != null && argType == CommandLineOption.Arg.OPTIONAL) {
+                                    if (withArg != null && argType == CommandLineOption.HasArg.OPTIONAL) {
                                         throw new IllegalArgumentException("Ambiguous input: multiple options provided which take an optional argument: '" + arg + "'");
                                     }
                                     withArg = opt;
-                                    argType = CommandLineOption.Arg.OPTIONAL;
+                                    argType = CommandLineOption.HasArg.OPTIONAL;
                                     break;
                             }
                         }
@@ -160,13 +168,20 @@ public class CommandLineInput {
         putIfAbsent(optionValues, option, value, "Option specified by " + option + " has been set multiple times");
     }
 
-
     public boolean hasFlag(String flag) {
         return flags.contains(options.getOption(flag));
     }
 
     public boolean hasFlag(char flag) {
         return flags.contains(options.getOption(flag));
+    }
+
+    public String getOption(String option) {
+        return optionValues.get(options.getOption(option));
+    }
+
+    public String getOption(char option) {
+        return optionValues.get(options.getOption(option));
     }
 
     public String nextArg() {
